@@ -1,37 +1,7 @@
-#include "SatelliteConfig.c"
-#include "GoldCodeGenerator.c"
+#include "Processor.h"
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
-
-
-struct satellite {
-    unsigned char sentBit;
-    int id;
-    unsigned short t;
-    unsigned short delta;
-    unsigned char chipSequence[1023];
-    short signal[1023];
-};
-
-typedef struct satellite Satellite;
-
-
-struct processor {
-    char signalData[SIGNALSIZE];
-    Satellite* satellites[SATELLITE_COUNT];
-    GoldCodeGenerator* generator;
-};
-
-typedef struct processor Processor;
-
-void createSatellites(Processor* processor);
-void createSatelliteSignal(Satellite* satellite);
-void decode(Processor* processor);
-bool checkSignal(Processor* processor, unsigned char start, unsigned char satelliteId);
-bool checkSatelliteSignal(Processor* processor, unsigned char satelliteId);
-bool loadFile(Processor* processor, const char* filePath);
-Processor* processor();
 
 Processor* processor() {
     Processor* processor = malloc(sizeof(Processor));
@@ -94,11 +64,9 @@ bool checkSignal(Processor* processor, unsigned char start, unsigned char satell
             processor->satellites[satelliteId - 1]->sentBit = 1;
             return true;
             break;
-
         case -1:
             processor->satellites[satelliteId - 1]->sentBit = 0;
             return true;
-
         default:
             return false;
     }
@@ -120,65 +88,56 @@ bool checkSatelliteSignal(Processor* processor, unsigned char satelliteId) {
     return false;
 }
 
-/* void printSatelliteSignal(uint8_t satelliteId) {
-    printf("Stalleite: %d\n", satelliteId);
-    printf("[");
-    for (auto i = 0; i < SIGNALSIZE; i++) {
-        printf("%d, ", satellites[satelliteId-1]->signal[i]);
-    }
-    printf("]\n");
-} */
-
 bool loadFile(Processor* processor, const char* filePath) {
-        FILE* file = fopen(filePath, "r");
+    FILE* file = fopen(filePath, "r");
 
-        if(file == NULL) {
-            printf("Failed to open file \n");
-            return false;
-        }
-
-        fseek(file, 0, SEEK_END);
-        long fileSize = ftell(file);
-        rewind(file);
-
-        char* fileBuffer = (char*)malloc(sizeof(char) * fileSize);
-
-        size_t readSize = fread(fileBuffer, sizeof(char), (size_t)fileSize, file);
-
-        if (readSize != fileSize) {
-            printf("Failed to read file \n");
-            return false;
-        }
-
-        int index = 0;
-        bool nextNegative = false;
-        char entry = ' ';
-
-        for (int i = 0; i < fileSize; i++) {
-            entry = (char)fileBuffer[i];
-
-            if (entry == '-') {
-                nextNegative = true;
-            } else if (entry == 32) {
-                nextNegative = false;
-            } else {
-                if (index >= SIGNALSIZE) {
-                    printf("File is to large to read \n");
-                    return false;
-                }
-                processor->signalData[index] = entry - '0';
-
-                if (nextNegative) {
-                    processor->signalData[index] *= -1;
-                }
-
-                nextNegative = false;
-                index++;
-            }
-        }
-
-        fclose(file);
-        free(fileBuffer);
-
-        return true;
+    if(file == NULL) {
+        printf("Failed to open file \n");
+        return false;
     }
+
+    fseek(file, 0, SEEK_END);
+    long fileSize = ftell(file);
+    rewind(file);
+
+    char* fileBuffer = (char*)malloc(sizeof(char) * fileSize);
+
+    size_t readSize = fread(fileBuffer, sizeof(char), (size_t)fileSize, file);
+
+    if (readSize != fileSize) {
+        printf("Failed to read file \n");
+        return false;
+    }
+
+    int index = 0;
+    bool nextNegative = false;
+    char entry = ' ';
+
+    for (int i = 0; i < fileSize; i++) {
+        entry = (char)fileBuffer[i];
+
+        if (entry == '-') {
+            nextNegative = true;
+        } else if (entry == 32) {
+            nextNegative = false;
+        } else {
+            if (index >= SIGNALSIZE) {
+                printf("File is to large to read \n");
+                return false;
+            }
+            processor->signalData[index] = entry - '0';
+
+            if (nextNegative) {
+                processor->signalData[index] *= -1;
+            }
+
+            nextNegative = false;
+            index++;
+        }
+    }
+
+    fclose(file);
+    free(fileBuffer);
+
+    return true;
+}

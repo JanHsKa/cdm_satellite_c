@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.14)
 
 project(cdm_satellite
     VERSION 1.0
-    DESCRIPTION "embedded Software Labor Task 3"
+    DESCRIPTION "embedded Software Labor Task 3, c version"
     LANGUAGES C
 )
 
@@ -16,7 +16,7 @@ set(CMAKE_C_STANDARD 11)
 
 file(GLOB_RECURSE source_list "${PROJECT_SOURCE_DIR}/*.c")
 add_library(lib STATIC ${source_list})
-#target_include_directories(lib PUBLIC include)
+target_include_directories(lib PUBLIC include)
 
 
 add_executable(cdm_satellite main.c)

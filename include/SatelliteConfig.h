@@ -1,6 +1,6 @@
-
 #define SATELLITE_COUNT 24
-const unsigned char REGISTER_PAIRS[24][2] = {
+
+static unsigned char REGISTER_PAIRS[24][2] = {
     {2, 6}, 
     {3, 7},
     {4, 8},
@@ -26,7 +26,7 @@ const unsigned char REGISTER_PAIRS[24][2] = {
     {1, 3},
     {4, 6}};
 
-const unsigned short DURATIONS[24] = {
+static unsigned short DURATIONS[24] = {
     5,
     6,
     7,
