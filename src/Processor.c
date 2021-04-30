@@ -6,6 +6,7 @@
 Processor* processor() {
     Processor* processor = malloc(sizeof(Processor));
     processor->generator = goldCodeGenerator();
+    createSatellites(processor);
 
     return processor;
 }
@@ -35,8 +36,6 @@ void createSatelliteSignal(Satellite* satellite) {
 }
 
 void decode(Processor* processor) {
-    createSatellites(processor);
-
     for (int i = 0; i < SATELLITE_COUNT; i++) {
         if (checkSatelliteSignal(processor, processor->satellites[i]->id)) {
             printf("Satellite %d has sent bit %d (delta = %d )\n", processor->satellites[i]->id, 
@@ -49,14 +48,14 @@ bool checkSignal(Processor* processor, unsigned char start, unsigned char satell
     int checkSum = 0;
     int index = start;
 
-    for (int i = 0; i < SATELLITE_COUNT; i++) {
+    for (int i = 0; i < SIGNALSIZE; i++) {
         checkSum += processor->signalData[index % SIGNALSIZE] * processor->satellites[satelliteId - 1]->signal[i];
         index++;
     } 
 
+
     if (checkSum > 200 || checkSum < -200) {
         printf("Check Sum : %d \n", checkSum);
-
     }
 
     switch (checkSum) {

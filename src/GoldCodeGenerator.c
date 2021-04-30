@@ -19,6 +19,7 @@ GoldCodeGenerator* goldCodeGenerator() {
 
     unsigned short shiftBits[6] = {0b0100000000, 0b0010000000, 0b0000010000, 0b0000000100, 0b0000000010, 0b0000000001};
     
+    g2->shiftBitSize = 0;
     for (int i = 0; i < 6; i++) {
         g2->shiftBits[i] = shiftBits[i];
         g2->shiftBitSize++;
@@ -40,7 +41,7 @@ void generate(GoldCodeGenerator* codeGenerator, unsigned char* code, unsigned sh
     codeGenerator->g2->resultBits[0] = (1 << (10 - first));
     codeGenerator->g2->resultBits[1] = (1 << (10 - second));
 
-    for (int i = 0; i <= SIGNALSIZE; i++) {
+    for (int i = 0; i < SIGNALSIZE; i++) {
         code[i] = get_next_bit(codeGenerator);
     }
 }
@@ -54,7 +55,7 @@ unsigned char get_next_bit(GoldCodeGenerator* generator) {
 
 unsigned char shift(ShiftRegister* shiftRegister) {
     unsigned char resultBit = (unsigned char)applyBitmasks(shiftRegister->resultBits, shiftRegister->resultBitSize, shiftRegister->registerBits);
-    unsigned short shiftBit = applyBitmasks(shiftRegister->resultBits, shiftRegister->shiftBitSize, shiftRegister->registerBits);
+    unsigned short shiftBit = applyBitmasks(shiftRegister->shiftBits, shiftRegister->shiftBitSize, shiftRegister->registerBits);
 
 
     shiftRegister->registerBits >>= 1;

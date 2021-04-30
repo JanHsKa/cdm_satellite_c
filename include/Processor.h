@@ -9,7 +9,7 @@ struct satellite {
     unsigned short t;
     unsigned short delta;
     unsigned char chipSequence[SIGNALSIZE];
-    short signal[SIGNALSIZE];
+    char signal[SIGNALSIZE];
 };
 
 typedef struct satellite Satellite;
