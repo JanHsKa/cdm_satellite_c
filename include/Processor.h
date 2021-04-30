@@ -5,7 +5,7 @@
 
 struct satellite {
     unsigned char sentBit;
-    int id;
+    unsigned char id;
     unsigned short t;
     unsigned short delta;
     unsigned char chipSequence[SIGNALSIZE];

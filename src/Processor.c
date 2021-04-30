@@ -42,7 +42,7 @@ void decode(Processor* processor) {
 }
 
 bool checkSatelliteSignal(Processor* processor, unsigned char satelliteId) {
-    for (int i = 0; i < SIGNALSIZE; i++) {
+    for (unsigned short i = 0; i < SIGNALSIZE; i++) {
         if (checkSignal(processor, i, satelliteId)) {
             processor->satellites[satelliteId - 1]->delta = i;
             return true;
@@ -54,11 +54,10 @@ bool checkSatelliteSignal(Processor* processor, unsigned char satelliteId) {
 
 bool checkSignal(Processor* processor, unsigned short start, unsigned char satelliteId) {
     int checkSum = 0;
-    int index = start;
 
     for (int i = 0; i < SIGNALSIZE; i++) {
-        checkSum += processor->signalData[index % SIGNALSIZE] * processor->satellites[satelliteId - 1]->signal[i];
-        index++;
+        checkSum += processor->signalData[start % SIGNALSIZE] * processor->satellites[satelliteId - 1]->signal[i];
+        start++;
     } 
 
     checkSum /= SIGNALSIZE;
@@ -67,21 +66,19 @@ bool checkSignal(Processor* processor, unsigned short start, unsigned char satel
         case 1:
             processor->satellites[satelliteId - 1]->sentBit = 1;
             return true;
-            break;
         case -1:
             processor->satellites[satelliteId - 1]->sentBit = 0;
             return true;
         default:
             return false;
     }
-
-    return false;
 }
 
 bool loadFile(Processor* processor, const char* filePath) {
-    FILE* file = fopen(filePath, "r");
+    FILE* file;
+	
 
-    if(file == NULL) {
+    if(fopen_s(&file, filePath, "r") != 0) {
         printf("Failed to open file \n");
         return false;
     }
@@ -90,7 +87,7 @@ bool loadFile(Processor* processor, const char* filePath) {
     long fileSize = ftell(file);
     rewind(file);
 
-    char* fileBuffer = (char*)malloc(sizeof(char) * fileSize);
+    char* fileBuffer = malloc(sizeof(char) * fileSize);
 
     size_t readSize = fread(fileBuffer, sizeof(char), (size_t)fileSize, file);
 
@@ -101,10 +98,9 @@ bool loadFile(Processor* processor, const char* filePath) {
 
     int index = 0;
     bool nextNegative = false;
-    char entry = ' ';
 
     for (int i = 0; i < fileSize; i++) {
-        entry = (char)fileBuffer[i];
+        const char entry = fileBuffer[i];
 
         if (entry == '-') {
             nextNegative = true;
