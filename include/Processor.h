@@ -14,7 +14,6 @@ struct satellite {
 
 typedef struct satellite Satellite;
 
-
 struct processor {
     char signalData[SIGNALSIZE];
     Satellite* satellites[SATELLITE_COUNT];

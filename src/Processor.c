@@ -22,7 +22,6 @@ void createSatellites(Processor* processor) {
     }
 }
 
-    
 void createSatelliteSignal(Satellite* satellite) {
     for (int i = 0; i < SIGNALSIZE; i++) {
         if (satellite->chipSequence[i] == 1) {
@@ -40,6 +39,17 @@ void decode(Processor* processor) {
             processor->satellites[i]->sentBit, processor->satellites[i]->delta);
         }
     }
+}
+
+bool checkSatelliteSignal(Processor* processor, unsigned char satelliteId) {
+    for (int i = 0; i < SIGNALSIZE; i++) {
+        if (checkSignal(processor, i, satelliteId)) {
+            processor->satellites[satelliteId - 1]->delta = i;
+            return true;
+        }
+    }
+
+    return false;
 }
 
 bool checkSignal(Processor* processor, unsigned short start, unsigned char satelliteId) {
@@ -63,18 +73,6 @@ bool checkSignal(Processor* processor, unsigned short start, unsigned char satel
             return true;
         default:
             return false;
-    }
-
-    return false;
-}
-
-
-bool checkSatelliteSignal(Processor* processor, unsigned char satelliteId) {
-    for (int i = 0; i < SIGNALSIZE; i++) {
-        if (checkSignal(processor, i, satelliteId)) {
-            processor->satellites[satelliteId - 1]->delta = i;
-            return true;
-        }
     }
 
     return false;
