@@ -20,8 +20,6 @@ void createSatellites(Processor* processor) {
         createSatelliteSignal(satellite);
         processor->satellites[i] = satellite;
     }
-
-    printf("end create\n");
 }
 
     
@@ -38,13 +36,13 @@ void createSatelliteSignal(Satellite* satellite) {
 void decode(Processor* processor) {
     for (int i = 0; i < SATELLITE_COUNT; i++) {
         if (checkSatelliteSignal(processor, processor->satellites[i]->id)) {
-            printf("Satellite %d has sent bit %d (delta = %d )\n", processor->satellites[i]->id, 
+            printf("Satellite %*d has sent bit %d (delta = %d)\n", 2, processor->satellites[i]->id, 
             processor->satellites[i]->sentBit, processor->satellites[i]->delta);
         }
     }
 }
 
-bool checkSignal(Processor* processor, unsigned char start, unsigned char satelliteId) {
+bool checkSignal(Processor* processor, unsigned short start, unsigned char satelliteId) {
     int checkSum = 0;
     int index = start;
 
@@ -53,10 +51,7 @@ bool checkSignal(Processor* processor, unsigned char start, unsigned char satell
         index++;
     } 
 
-
-    if (checkSum > 200 || checkSum < -200) {
-        printf("Check Sum : %d \n", checkSum);
-    }
+    checkSum /= SIGNALSIZE;
 
     switch (checkSum) {
         case 1:
@@ -75,8 +70,6 @@ bool checkSignal(Processor* processor, unsigned char start, unsigned char satell
 
 
 bool checkSatelliteSignal(Processor* processor, unsigned char satelliteId) {
-    printf("Checking Satellite: %d \n", (int)satelliteId);
-
     for (int i = 0; i < SIGNALSIZE; i++) {
         if (checkSignal(processor, i, satelliteId)) {
             processor->satellites[satelliteId - 1]->delta = i;

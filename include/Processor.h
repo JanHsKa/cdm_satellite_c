@@ -26,7 +26,7 @@ typedef struct processor Processor;
 void createSatellites(Processor* processor);
 void createSatelliteSignal(Satellite* satellite);
 void decode(Processor* processor);
-bool checkSignal(Processor* processor, unsigned char start, unsigned char satelliteId);
+bool checkSignal(Processor* processor, unsigned short start, unsigned char satelliteId);
 bool checkSatelliteSignal(Processor* processor, unsigned char satelliteId);
 bool loadFile(Processor* processor, const char* filePath);
 Processor* processor();
