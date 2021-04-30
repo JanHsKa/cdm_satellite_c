@@ -16,7 +16,6 @@ GoldCodeGenerator* goldCodeGenerator() {
     g1->shiftBitSize = 2;
     g1->resultBitSize = 1;
 
-
     unsigned short shiftBits[6] = {0b0100000000, 0b0010000000, 0b0000010000, 0b0000000100, 0b0000000010, 0b0000000001};
     
     g2->shiftBitSize = 0;
@@ -56,7 +55,6 @@ unsigned char get_next_bit(GoldCodeGenerator* generator) {
 unsigned char shift(ShiftRegister* shiftRegister) {
     unsigned char resultBit = (unsigned char)applyBitmasks(shiftRegister->resultBits, shiftRegister->resultBitSize, shiftRegister->registerBits);
     unsigned short shiftBit = applyBitmasks(shiftRegister->shiftBits, shiftRegister->shiftBitSize, shiftRegister->registerBits);
-
 
     shiftRegister->registerBits >>= 1;
     shiftRegister->registerBits |= shiftBit << 9;
